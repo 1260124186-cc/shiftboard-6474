@@ -32,6 +32,9 @@ func BuildAssignments(orders []model.WorkOrder, policies []model.ZonePolicy) ([]
 		if !found {
 			return nil, fmt.Errorf("no policy for zone %s", order.Zone)
 		}
+		if !hasRequiredTags(order.Tags, policiesForZone(policies, order.Zone).RequiredTags) {
+			return nil, fmt.Errorf("work order %s is missing a required zone tag", order.ID)
+		}
 		byZone[order.Zone]++
 		shift := "morning"
 		if byZone[order.Zone] > limit {
@@ -48,4 +51,26 @@ func BuildAssignments(orders []model.WorkOrder, policies []model.ZonePolicy) ([]
 		return assignments[left].WorkOrderID < assignments[right].WorkOrderID
 	})
 	return assignments, nil
+}
+
+func policiesForZone(policies []model.ZonePolicy, zone string) model.ZonePolicy {
+	for _, policy := range policies {
+		if policy.Zone == zone {
+			return policy
+		}
+	}
+	return model.ZonePolicy{}
+}
+
+func hasRequiredTags(tags []string, required []string) bool {
+	present := make(map[string]bool, len(tags))
+	for _, tag := range tags {
+		present[tag] = true
+	}
+	for _, tag := range required {
+		if !present[tag] {
+			return false
+		}
+	}
+	return true
 }

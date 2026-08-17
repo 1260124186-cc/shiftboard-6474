@@ -23,13 +23,9 @@ func NewBoard() *Board {
 }
 
 func NewBoardWithPolicies(policies []model.ZonePolicy) *Board {
-	copied := make([]model.ZonePolicy, len(policies))
-	for index, policy := range policies {
-		copied[index] = policy.Clone()
-	}
 	return &Board{
 		repository: store.NewRepository(),
-		policies:   copied,
+		policies:   policies,
 	}
 }
 

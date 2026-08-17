@@ -30,7 +30,7 @@ func (repo *Repository) Save(order model.WorkOrder) error {
 	if order.Stage == "" {
 		order.Stage = model.StageQueued
 	}
-	repo.orders[order.ID] = order.Clone()
+	repo.orders[order.ID] = order
 	return nil
 }
 
