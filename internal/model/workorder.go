@@ -35,8 +35,11 @@ func (order WorkOrder) Validate() error {
 
 func (order WorkOrder) Clone() WorkOrder {
 	clone := order
-	clone.Tags = order.Tags
-	clone.Notes = order.Notes
-	clone.Metadata = order.Metadata
+	clone.Tags = append([]string(nil), order.Tags...)
+	clone.Notes = append([]string(nil), order.Notes...)
+	clone.Metadata = make(map[string]string, len(order.Metadata))
+	for key, value := range order.Metadata {
+		clone.Metadata[key] = value
+	}
 	return clone
 }

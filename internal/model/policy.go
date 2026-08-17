@@ -9,6 +9,6 @@ type ZonePolicy struct {
 
 func (policy ZonePolicy) Clone() ZonePolicy {
 	clone := policy
-	clone.RequiredTags = policy.RequiredTags
+	clone.RequiredTags = append([]string(nil), policy.RequiredTags...)
 	return clone
 }
