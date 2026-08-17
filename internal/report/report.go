@@ -1,6 +1,7 @@
 package report
 
 import (
+	"errors"
 	"fmt"
 	"sort"
 	"strings"
@@ -8,6 +9,13 @@ import (
 	"shiftboard/internal/model"
 	"shiftboard/internal/plan"
 )
+
+func FormatImportError(err error) string {
+	if errors.Is(err, model.ErrImportCanceled) {
+		return "import canceled without changing the board\n"
+	}
+	return "import failed\n"
+}
 
 func Format(orders []model.WorkOrder, assignments []plan.Assignment) string {
 	counts := make(map[string]int)

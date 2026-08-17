@@ -1,6 +1,19 @@
 package model
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+
+var ErrImportCanceled = errors.New("work order import canceled")
+
+type ImportCanceledError struct {
+	Processed int
+}
+
+func (err ImportCanceledError) Error() string {
+	return fmt.Sprintf("import canceled after %d work orders", err.Processed)
+}
 
 type Stage string
 

@@ -1,6 +1,7 @@
 package store
 
 import (
+	"context"
 	"fmt"
 	"sort"
 	"sync"
@@ -31,6 +32,18 @@ func (repo *Repository) Save(order model.WorkOrder) error {
 		order.Stage = model.StageQueued
 	}
 	repo.orders[order.ID] = order.Clone()
+	return nil
+}
+
+func (repo *Repository) SaveAll(ctx context.Context, orders []model.WorkOrder) error {
+	for index, order := range orders {
+		if err := repo.Save(order); err != nil {
+			return err
+		}
+		if ctx.Err() != nil {
+			return fmt.Errorf("import interrupted: %v", model.ImportCanceledError{Processed: index + 1})
+		}
+	}
 	return nil
 }
 
