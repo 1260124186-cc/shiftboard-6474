@@ -25,8 +25,16 @@ func NewBoard() *Board {
 func NewBoardWithPolicies(policies []model.ZonePolicy) *Board {
 	return &Board{
 		repository: store.NewRepository(),
-		policies:   policies,
+		policies:   clonePolicies(policies),
 	}
+}
+
+func clonePolicies(policies []model.ZonePolicy) []model.ZonePolicy {
+	cloned := make([]model.ZonePolicy, len(policies))
+	for i := range policies {
+		cloned[i] = policies[i].Clone()
+	}
+	return cloned
 }
 
 func (board *Board) Import(ctx context.Context, orders []model.WorkOrder) error {

@@ -1,6 +1,10 @@
 package model
 
-import "fmt"
+import (
+	"fmt"
+	"maps"
+	"slices"
+)
 
 type Stage string
 
@@ -35,8 +39,10 @@ func (order WorkOrder) Validate() error {
 
 func (order WorkOrder) Clone() WorkOrder {
 	clone := order
-	clone.Tags = order.Tags
-	clone.Notes = order.Notes
-	clone.Metadata = order.Metadata
+	clone.Tags = slices.Clone(order.Tags)
+	clone.Notes = slices.Clone(order.Notes)
+	if order.Metadata != nil {
+		clone.Metadata = maps.Clone(order.Metadata)
+	}
 	return clone
 }

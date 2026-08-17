@@ -1,5 +1,7 @@
 package model
 
+import "slices"
+
 type ZonePolicy struct {
 	Zone          string
 	MaxPerShift   int
@@ -9,6 +11,6 @@ type ZonePolicy struct {
 
 func (policy ZonePolicy) Clone() ZonePolicy {
 	clone := policy
-	clone.RequiredTags = policy.RequiredTags
+	clone.RequiredTags = slices.Clone(policy.RequiredTags)
 	return clone
 }
