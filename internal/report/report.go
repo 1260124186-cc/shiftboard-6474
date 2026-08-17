@@ -9,10 +9,11 @@ import (
 	"shiftboard/internal/plan"
 )
 
-func FormatDispatchReceipt(orderCount int) string {
+func FormatDispatchReceipt(orderCount int) (receipt string) {
 	lines := []string{fmt.Sprintf("dispatched work orders: %d", orderCount)}
 	defer func() {
 		lines = append(lines, "status: ready")
+		receipt = strings.Join(lines, "\n") + "\n"
 	}()
 	return strings.Join(lines, "\n") + "\n"
 }
