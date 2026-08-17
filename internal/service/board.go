@@ -15,6 +15,12 @@ type Board struct {
 	policies   []model.ZonePolicy
 }
 
+func (board *Board) ensureRepository() {
+	if board.repository == nil {
+		board.repository = store.NewRepository()
+	}
+}
+
 func NewBoard() *Board {
 	return NewBoardWithPolicies([]model.ZonePolicy{
 		{Zone: "north", MaxPerShift: 2},
@@ -34,6 +40,7 @@ func NewBoardWithPolicies(policies []model.ZonePolicy) *Board {
 }
 
 func (board *Board) Import(ctx context.Context, orders []model.WorkOrder) error {
+	board.ensureRepository()
 	for _, order := range orders {
 		if err := ctx.Err(); err != nil {
 			return err
@@ -46,6 +53,7 @@ func (board *Board) Import(ctx context.Context, orders []model.WorkOrder) error 
 }
 
 func (board *Board) Assign() error {
+	board.ensureRepository()
 	orders := board.repository.List()
 	assignments, err := plan.BuildAssignments(orders, board.policies)
 	if err != nil {
@@ -66,6 +74,7 @@ func (board *Board) Assign() error {
 }
 
 func (board *Board) Report() string {
+	board.ensureRepository()
 	orders := board.repository.List()
 	assignments, err := plan.BuildAssignments(orders, board.policies)
 	if err != nil {
@@ -75,5 +84,6 @@ func (board *Board) Report() string {
 }
 
 func (board *Board) Orders() []model.WorkOrder {
+	board.ensureRepository()
 	return board.repository.List()
 }
