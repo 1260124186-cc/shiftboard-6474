@@ -49,7 +49,7 @@ func (board *Board) Assign() error {
 	orders := board.repository.List()
 	assignments, err := plan.BuildAssignments(orders, board.policies)
 	if err != nil {
-		return fmt.Errorf("build shift assignments: %v", err)
+		return fmt.Errorf("build shift assignments: %w", err)
 	}
 	for _, assignment := range assignments {
 		order, err := board.repository.Get(assignment.WorkOrderID)
