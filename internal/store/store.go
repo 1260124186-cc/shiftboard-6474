@@ -36,14 +36,29 @@ func (repo *Repository) Save(order model.WorkOrder) error {
 }
 
 func (repo *Repository) SaveAll(ctx context.Context, orders []model.WorkOrder) error {
+	repo.mu.Lock()
+	defer repo.mu.Unlock()
+
+	next := make(map[string]model.WorkOrder, len(repo.orders)+len(orders))
+	for id, existing := range repo.orders {
+		next[id] = existing.Clone()
+	}
 	for index, order := range orders {
-		if err := repo.Save(order); err != nil {
+		if ctx.Err() != nil {
+			return model.ImportCanceledError{Processed: index}
+		}
+		if err := order.Validate(); err != nil {
 			return err
 		}
-		if ctx.Err() != nil {
-			return fmt.Errorf("import interrupted: %v", model.ImportCanceledError{Processed: index + 1})
+		if _, exists := next[order.ID]; exists {
+			return fmt.Errorf("work order %s already exists", order.ID)
 		}
+		if order.Stage == "" {
+			order.Stage = model.StageQueued
+		}
+		next[order.ID] = order.Clone()
 	}
+	repo.orders = next
 	return nil
 }
 

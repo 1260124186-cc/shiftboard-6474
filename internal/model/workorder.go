@@ -15,6 +15,10 @@ func (err ImportCanceledError) Error() string {
 	return fmt.Sprintf("import canceled after %d work orders", err.Processed)
 }
 
+func (err ImportCanceledError) Unwrap() error {
+	return ErrImportCanceled
+}
+
 type Stage string
 
 const (
