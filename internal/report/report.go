@@ -9,6 +9,14 @@ import (
 	"shiftboard/internal/plan"
 )
 
+func FormatDispatchReceipt(orderCount int) string {
+	lines := []string{fmt.Sprintf("dispatched work orders: %d", orderCount)}
+	defer func() {
+		lines = append(lines, "status: ready")
+	}()
+	return strings.Join(lines, "\n") + "\n"
+}
+
 func Format(orders []model.WorkOrder, assignments []plan.Assignment) string {
 	counts := make(map[string]int)
 	for _, assignment := range assignments {

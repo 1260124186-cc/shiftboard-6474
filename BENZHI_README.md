@@ -1,4 +1,4 @@
-# shiftboard-6474 Docker 交付说明
+# shiftboard__005 Docker 交付说明
 
 ## 项目概览
 - Shiftboard is a local command-line service for small operations teams to track work
@@ -20,8 +20,8 @@ go run ./cmd/shiftboard
 ## Docker 构建
 
 ```bash
-./build_benzhi_docker.sh shiftboard-6474-benzhi linux/amd64
-docker run --rm -it shiftboard-6474-benzhi bash
+./build_benzhi_docker.sh shiftboard__005-benzhi linux/amd64
+docker run --rm -it shiftboard__005-benzhi bash
 ```
 
 ## 环境
