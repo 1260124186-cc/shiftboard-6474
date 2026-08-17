@@ -1,0 +1,31 @@
+# shiftboard-6474 Docker 交付说明
+
+## 项目概览
+- Shiftboard is a local command-line service for small operations teams to track work
+- Go module: `shiftboard`
+
+## 标准命令
+
+```bash
+go build ./...
+go test ./...
+```
+
+## 实际启动入口
+
+```bash
+go run ./cmd/shiftboard
+```
+
+## Docker 构建
+
+```bash
+./build_benzhi_docker.sh shiftboard-6474-benzhi linux/amd64
+docker run --rm -it shiftboard-6474-benzhi bash
+```
+
+## 环境
+
+- 基础镜像: `golang:1.23`
+- 依赖在镜像构建阶段预下载，容器内可直接执行 Go 构建和测试命令。
+- 代码目录: `/app`
