@@ -35,7 +35,7 @@ func NewBoardWithPolicies(policies []model.ZonePolicy) *Board {
 
 func (board *Board) Import(ctx context.Context, orders []model.WorkOrder) error {
 	if err := board.repository.SaveAll(ctx, orders); err != nil {
-		return fmt.Errorf("import work orders: %v", err)
+		return fmt.Errorf("import work orders: %w", err)
 	}
 	return nil
 }

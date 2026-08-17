@@ -15,6 +15,11 @@ func (err ImportCanceledError) Error() string {
 	return fmt.Sprintf("import canceled after %d work orders", err.Processed)
 }
 
+// Unwrap 让 errors.Is(err, ErrImportCanceled) 成立，调用端可识别取消语义
+func (err ImportCanceledError) Unwrap() error {
+	return ErrImportCanceled
+}
+
 type Stage string
 
 const (

@@ -36,15 +36,32 @@ func (repo *Repository) Save(order model.WorkOrder) error {
 }
 
 func (repo *Repository) SaveAll(ctx context.Context, orders []model.WorkOrder) error {
+	saved := make([]string, 0, len(orders))
 	for index, order := range orders {
+		// 先检查取消，避免取消后仍把工单落库
+		if err := ctx.Err(); err != nil {
+			repo.rollback(saved)
+			return fmt.Errorf("import interrupted: %w", model.ImportCanceledError{Processed: index})
+		}
 		if err := repo.Save(order); err != nil {
+			repo.rollback(saved)
 			return err
 		}
-		if ctx.Err() != nil {
-			return fmt.Errorf("import interrupted: %v", model.ImportCanceledError{Processed: index + 1})
-		}
+		saved = append(saved, order.ID)
 	}
 	return nil
+}
+
+// rollback 回滚本批已新增的工单，保证取消导入后面板内容不变
+func (repo *Repository) rollback(saved []string) {
+	if len(saved) == 0 {
+		return
+	}
+	repo.mu.Lock()
+	defer repo.mu.Unlock()
+	for _, id := range saved {
+		delete(repo.orders, id)
+	}
 }
 
 func (repo *Repository) Replace(order model.WorkOrder) error {
