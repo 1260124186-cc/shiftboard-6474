@@ -15,6 +15,10 @@ func (err MissingZonePolicyError) Error() string {
 	return fmt.Sprintf("missing policy for zone %s", err.Zone)
 }
 
+func (err MissingZonePolicyError) Unwrap() error {
+	return ErrMissingZonePolicy
+}
+
 type ZonePolicy struct {
 	Zone          string
 	MaxPerShift   int

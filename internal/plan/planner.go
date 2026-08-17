@@ -30,7 +30,7 @@ func BuildAssignments(orders []model.WorkOrder, policies []model.ZonePolicy) ([]
 		}
 		limit, found := limits[order.Zone]
 		if !found {
-			return nil, fmt.Errorf("no policy for zone %s", order.Zone)
+			return nil, model.MissingZonePolicyError{Zone: order.Zone}
 		}
 		byZone[order.Zone]++
 		shift := "morning"
